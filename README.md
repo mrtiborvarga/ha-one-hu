@@ -1,3 +1,5 @@
+Review your One account SIMs and details.
+
 ## Authentication
 
 The integration currently requires an authenticated browser session from One Hungary.
@@ -11,13 +13,7 @@ The integration currently requires an authenticated browser session from One Hun
 5. Open a request similar to:
 
 ```text
-/o/ecare/services?serviceType=Mobile
-```
-
-or
-
-```text
-/o/ecare/usages/ocs-usages?msisdn=...
+https://www.one.hu/o/nc-framework-kernel/localization/getJson?locale=hu_HU
 ```
 
 6. Open **Request Headers**.
@@ -42,4 +38,3 @@ JSESSIONID_VHPRTP_7500=...; CSRF_TOKEN=...; LFR_SESSION_STATE_20105=...;
 - The session will eventually expire.
 - If the integration stops working, obtain a new Cookie Header.
 - Future versions may support automatic authentication.
-
