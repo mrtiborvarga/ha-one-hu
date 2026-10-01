@@ -1,94 +1,45 @@
-# Unofficial One Hungary
+## Authentication
 
-Unofficial Home Assistant integration for One Hungary mobile subscriptions.
+The integration currently requires an authenticated browser session from One Hungary.
 
-> ⚠️ This project is not affiliated with, endorsed by, or maintained by One Hungary.
+### How to obtain the Cookie Header
 
-## Features
-
-Current development goals:
-
-- Discover mobile subscriptions
-- Display prepaid balances
-- Display remaining data allowances
-- Display available bundles
-- Display subscription status
-- Home Assistant Config Flow
-- HACS support
-
-## Current Status
-
-🚧 Early development
-
-The integration is under active development and should currently be considered experimental.
-
-## Installation
-
-### HACS
-
-1. Open HACS
-2. Add this repository as a custom repository
-3. Category: **Integration**
-4. Search for **Unofficial One Hungary**
-5. Download
-6. Restart Home Assistant
-
-### Manual Installation
-
-Copy:
+1. Log in to your One Hungary account.
+2. Press `F12` to open Developer Tools.
+3. Open the **Network** tab.
+4. Refresh the page.
+5. Open a request similar to:
 
 ```text
-custom_components/one_hu
+/o/ecare/services?serviceType=Mobile
 ```
 
-into:
+or
 
 ```text
-/config/custom_components/
+/o/ecare/usages/ocs-usages?msisdn=...
 ```
 
-Restart Home Assistant.
-
-## Configuration
-
-The current development version requires a valid authenticated browser session.
-
-### Cookie Header
-
-The integration currently uses a browser session exported from the One Hungary customer portal.
-
-Future versions may support automated authentication, depending on what is technically possible.
-
-## Planned Sensors
-
-Examples:
-
-- Mobile balance
-- Remaining allowance
-- Data usage
-- Days remaining
-- Subscription status
-
-## Development
-
-Repository:
+6. Open **Request Headers**.
+7. Locate the header named:
 
 ```text
-https://github.com/mrtiborvarga/ha-one-hu
+Cookie
 ```
 
-Development branch:
+8. Copy the **entire Cookie header value**.
+
+Example:
 
 ```text
-develop
+JSESSIONID_VHPRTP_7500=...; CSRF_TOKEN=...; LFR_SESSION_STATE_20105=...;
 ```
 
-## Disclaimer
+9. Paste the complete value into the Home Assistant configuration field.
 
-This integration relies on unofficial APIs which may change without notice.
+### Notes
 
-Use at your own risk.
+- The session will eventually expire.
+- If the integration stops working, obtain a new Cookie Header.
+- Future versions may support automatic authentication.
 
-## License
-
-MIT
