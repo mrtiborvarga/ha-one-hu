@@ -7,8 +7,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 
 from .const import (
-    CONF_CSRF_TOKEN,
-    CONF_SESSION_COOKIE,
+    CONF_COOKIE_HEADER,
     DOMAIN,
 )
 
