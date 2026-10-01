@@ -5,8 +5,7 @@
         "title": "Unofficial One Hungary",
         "description": "Configure access to One Hungary",
         "data": {
-          "session_cookie": "Session Cookie",
-          "csrf_token": "CSRF Token"
+          "cookie_header": "Cookie Header"
         }
       }
     },

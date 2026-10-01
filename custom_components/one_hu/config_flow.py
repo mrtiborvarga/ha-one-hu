@@ -12,7 +12,6 @@ from .const import (
     DOMAIN,
 )
 
-
 class OneHuConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow."""
 
@@ -31,8 +30,7 @@ class OneHuConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Required(CONF_SESSION_COOKIE): str,
-                    vol.Required(CONF_CSRF_TOKEN): str,
+                   vol.Required(CONF_COOKIE_HEADER): str,
                 }
             ),
         )
