@@ -1,0 +1,11 @@
+{
+  "domain": "one_hu",
+  "name": "Unofficial One Hungary",
+  "version": "0.0.1",
+  "documentation": "https://github.com/mrtiborvarga/ha-one-hu",
+  "issue_tracker": "https://github.com/mrtiborvarga/ha-one-hu/issues",
+  "codeowners": ["@mrtiborvarga"],
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "requirements": []
+}
