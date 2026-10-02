@@ -38,6 +38,11 @@ async def async_setup_entry(
                 OneDaysAvailableSensor(coordinator, msisdn),
                 OneBundlesCountSensor(coordinator, msisdn),
                 OneBucketsCountSensor(coordinator, msisdn),
+
+                OneDataAllowanceSensor(coordinator, msisdn),
+                OneDataRemainingSensor(coordinator, msisdn),
+                OneDataUsedSensor(coordinator, msisdn),
+                OneDataUsedPercentageSensor(coordinator, msisdn),
             ]
         )
 
@@ -252,6 +257,33 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+class OneDataAllowanceSensor(OneBaseSensor):
+    """Total data allowance."""
+
+    entity_description = SensorEntityDescription(
+        key="data_allowance",
+        name="Data allowance",
+        icon="mdi:database",
+        native_unit_of_measurement="GB",
+    )
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_data_allowance"
+
+    @property
+    def native_value(self) -> float | None:
+        """Return total allowance in GB."""
+        return (
+            self.usage
+            .get("data_summary", {})
+            .get("total_gb")
+        )
+
 class OneLastSuccessfulSyncSensor(
     CoordinatorEntity,
     SensorEntity,
@@ -306,3 +338,82 @@ class OneApiStatusSensor(
             "api_status",
             "Unknown",
         )
+
+class OneDataRemainingSensor(OneBaseSensor):
+    """Remaining data."""
+
+    entity_description = SensorEntityDescription(
+        key="data_remaining",
+        name="Data remaining",
+        icon="mdi:database-check",
+        native_unit_of_measurement="GB",
+    )
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_data_remaining"
+
+    @property
+    def native_value(self) -> float | None:
+        return (
+            self.usage
+            .get("data_summary", {})
+            .get("remaining_gb")
+        )
+
+class OneDataUsedSensor(OneBaseSensor):
+    """Used data."""
+
+    entity_description = SensorEntityDescription(
+        key="data_used",
+        name="Data used",
+        icon="mdi:database-minus",
+        native_unit_of_measurement="GB",
+    )
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_data_used"
+
+    @property
+    def native_value(self) -> float | None:
+        return (
+            self.usage
+            .get("data_summary", {})
+            .get("used_gb")
+        )
+
+class OneDataUsedPercentageSensor(OneBaseSensor):
+    """Used data percentage."""
+
+    entity_description = SensorEntityDescription(
+        key="data_used_percentage",
+        name="Data used percentage",
+        icon="mdi:percent",
+        native_unit_of_measurement="%",
+    )
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_data_used_percentage"
+
+    @property
+    def native_value(self) -> float | None:
+        return (
+            self.usage
+            .get("data_summary", {})
+            .get("used_percentage")
+        )
+

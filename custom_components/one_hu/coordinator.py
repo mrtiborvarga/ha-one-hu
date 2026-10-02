@@ -17,6 +17,96 @@ from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+_BYTES_PER_MB = 1024**2
+_BYTES_PER_GB = 1024**3
+
+
+def _quantity_to_bytes(value: Any, unit: str) -> float:
+    """Convert a data quantity to bytes."""
+    try:
+        numeric_value = float(value)
+    except (TypeError, ValueError):
+        return 0.0
+
+    normalized_unit = unit.upper()
+
+    if normalized_unit == "GB":
+        return numeric_value * _BYTES_PER_GB
+
+    if normalized_unit == "MB":
+        return numeric_value * _BYTES_PER_MB
+
+    if normalized_unit in {"B", "BYTE", "BYTES"}:
+        return numeric_value
+
+    return 0.0
+
+
+def _summarize_data_buckets(
+    usage: dict[str, Any],
+) -> dict[str, float | int | None]:
+    """Summarize data buckets in a common unit."""
+    total_bytes = 0.0
+    remaining_bytes = 0.0
+    expiry_dates: list[int] = []
+
+    for bucket in usage.get("buckets", []):
+        if not isinstance(bucket, dict):
+            continue
+
+        offer = bucket.get("offer", {})
+        domains = bucket.get("domainSSP", [])
+
+        domain_type = str(offer.get("domainType", ""))
+        is_data_bucket = (
+            "Data" in domain_type
+            or any("Data" in str(domain) for domain in domains)
+        )
+
+        if not is_data_bucket:
+            continue
+
+        total_bucket_bytes = offer.get("numericVolume")
+
+        try:
+            total_bucket_bytes = float(total_bucket_bytes)
+        except (TypeError, ValueError):
+            total_bucket_bytes = 0.0
+
+        if total_bucket_bytes <= 0:
+            total_bucket_bytes = _quantity_to_bytes(
+                offer.get("volume"),
+                str(offer.get("units", "")),
+            )
+
+        remaining_bucket_bytes = _quantity_to_bytes(
+            bucket.get("counter"),
+            str(bucket.get("units") or offer.get("units", "")),
+        )
+
+        total_bytes += total_bucket_bytes
+        remaining_bytes += remaining_bucket_bytes
+
+        end_date = bucket.get("endDate")
+
+        if isinstance(end_date, int):
+            expiry_dates.append(end_date)
+
+    used_bytes = max(total_bytes - remaining_bytes, 0.0)
+
+    used_percentage = (
+        round((used_bytes / total_bytes) * 100, 1)
+        if total_bytes > 0
+        else None
+    )
+
+    return {
+        "total_gb": round(total_bytes / _BYTES_PER_GB, 3),
+        "remaining_gb": round(remaining_bytes / _BYTES_PER_GB, 3),
+        "used_gb": round(used_bytes / _BYTES_PER_GB, 3),
+        "used_percentage": used_percentage,
+        "expires_at": min(expiry_dates) if expiry_dates else None,
+    }
 
 class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Coordinate updates from the One Hungary API."""
@@ -88,6 +178,7 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     "buckets": [],
                 }
 
+            usage["data_summary"] = _summarize_data_buckets(usage)
             usage_by_msisdn[msisdn] = usage
 
         return {
