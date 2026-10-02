@@ -58,21 +58,19 @@ Restart Home Assistant, then add **Unofficial One Hungary** under **Settings > D
 ### Obtain the Cookie Header
 
 1. Sign in to your One Hungary account in a desktop browser.
-2. While signed in, open the following lightweight endpoint:
-   [One Hungary localization endpoint](https://www.one.hu/o/nc-framework-kernel/localization/getJson?locale=hu_HU)
-3. Open Developer Tools by pressing `F12`.
-4. Select the **Network** tab.
-5. Reload the page.
-6. Select the request whose URL ends with:
+2. Open Developer Tools by pressing `F12`. 
+3. Select the **Network** tab.
+4. Reload the page.
+5. Select the request whose URL ends with:
 
    ```text
    /o/nc-framework-kernel/localization/getJson?locale=hu_HU
    ```
 
-7. Open **Request Headers**.
-8. Locate the header named `Cookie`.
-9. Copy the entire value after `Cookie:`. Do not include the word `Cookie:` itself.
-10. Paste the complete value into the integration's **Cookie Header** field.
+6. Open **Request Headers**.
+7. Locate the header named `Cookie`.
+8. Copy the entire value after `Cookie:`. Do not include the word `Cookie:` itself.
+9. Paste the complete value into the integration's **Cookie Header** field.
 
 Example format:
 
