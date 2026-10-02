@@ -1,4 +1,4 @@
-"""Button platform for One Hungary."""
+"""Buttons for One Hungary."""
 
 from homeassistant.components.button import ButtonEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -6,25 +6,42 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
-    """Set up button entity."""
+async def async_setup_entry(
+    hass,
+    entry,
+    async_add_entities,
+):
+    """Set up buttons."""
+
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
     async_add_entities(
-        [OneHuRefreshButton(coordinator)],
+        [
+            OneRefreshButton(coordinator),
+        ]
     )
 
 
-class OneHuRefreshButton(CoordinatorEntity, ButtonEntity):
-    """Refresh One Hungary data."""
+class OneRefreshButton(
+    CoordinatorEntity,
+    ButtonEntity,
+):
+    """Manual refresh button."""
 
-    _attr_name = "Refresh data"
-    _attr_has_entity_name = True
+    _attr_name = "One Hungary Refresh"
+    _attr_unique_id = "one_hu_refresh"
+    _attr_icon = "mdi:refresh"
 
-    def __init__(self, coordinator):
-        super().__init__(coordinator)
-        self._attr_unique_id = "one_hu_refresh"
+    @property
+    def device_info(self):
+        """Attach button to One Hungary device."""
+        return {
+            "identifiers": {(DOMAIN, "one_hu")},
+            "name": "One Hungary",
+            "manufacturer": "One Hungary",
+        }
+
 
     async def async_press(self) -> None:
-        """Handle button press."""
+        """Refresh data."""
         await self.coordinator.async_request_refresh()

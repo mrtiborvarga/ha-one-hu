@@ -27,7 +27,9 @@ async def async_setup_entry(
 
     entities: list[SensorEntity] = [
         OneMobileServicesCountSensor(coordinator),
-    ]
+        OneLastSuccessfulSyncSensor(coordinator),
+        OneApiStatusSensor(coordinator),
+      ]
 
     for msisdn in coordinator.data.get("usage_by_msisdn", {}):
         entities.extend(
@@ -99,6 +101,25 @@ class OneMobileServicesCountSensor(
     _attr_name = "Mobile services count"
     _attr_unique_id = "one_hu_mobile_services_count"
     _attr_icon = "mdi:sim"
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return integration device."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, "one_hu")},
+            name="One Hungary",
+            manufacturer="One Hungary",
+            configuration_url="https://www.one.hu",
+        )
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return integration device."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, "one_hu")},
+            name="One Hungary",
+            manufacturer="One Hungary",
+        )
 
     @property
     def native_value(self) -> int:
@@ -230,3 +251,58 @@ from homeassistant.components.sensor import (
     SensorDeviceClass,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+class OneLastSuccessfulSyncSensor(
+    CoordinatorEntity,
+    SensorEntity,
+):
+    """Last successful sync."""
+
+    _attr_name = "One Hungary Last Successful Sync"
+    _attr_unique_id = "one_hu_last_successful_sync"
+    _attr_icon = "mdi:clock-check"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return integration device."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, "one_hu")},
+            name="One Hungary",
+            manufacturer="One Hungary",
+            configuration_url="https://www.one.hu",
+        )
+
+    @property
+    def native_value(self):
+        """Return timestamp."""
+        return self.coordinator.data.get(
+            "last_successful_sync"
+        )
+
+class OneApiStatusSensor(
+    CoordinatorEntity,
+    SensorEntity,
+):
+    """One Hungary API status."""
+
+    _attr_name = "One Hungary API Status"
+    _attr_unique_id = "one_hu_api_status"
+    _attr_icon = "mdi:lan-connect"
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return integration device."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, "one_hu")},
+            name="One Hungary",
+            manufacturer="One Hungary",
+        )
+
+    @property
+    def native_value(self):
+        """Return API status."""
+        return self.coordinator.data.get(
+            "api_status",
+            "Unknown",
+        )

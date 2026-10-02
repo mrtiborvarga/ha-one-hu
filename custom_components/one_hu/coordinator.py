@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 import logging
 from typing import Any
 
@@ -95,4 +95,6 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "mobile_services_count": len(menu_items),
             "services": entities,
             "usage_by_msisdn": usage_by_msisdn,
+            "last_successful_sync": datetime.now(UTC),
+            "api_status": "Connected",
         }

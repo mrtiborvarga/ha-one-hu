@@ -12,8 +12,8 @@ from .const import CONF_COOKIE_HEADER, DOMAIN
 from .coordinator import OneDataUpdateCoordinator
 
 PLATFORMS = [
-    "sensor",
-    "button",
+    Platform.SENSOR,
+    Platform.BUTTON,
 ]
 
 async def async_setup_entry(
