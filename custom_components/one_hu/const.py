@@ -2,7 +2,6 @@
 
 DOMAIN = "one_hu"
 
-CONF_SESSION_COOKIE = "session_cookie"
-CONF_CSRF_TOKEN = "csrf_token"
+CONF_COOKIE_HEADER = "cookie_header"
 
 DEFAULT_SCAN_INTERVAL = 300

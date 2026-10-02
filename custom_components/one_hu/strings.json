@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Unofficial One Hungary",
+        "description": "Configure access to One Hungary.",
+        "data": {
+          "cookie_header": "Cookie Header"
+        }
+      }
+    }
+  }
+}

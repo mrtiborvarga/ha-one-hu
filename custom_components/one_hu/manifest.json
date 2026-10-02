@@ -1,7 +1,7 @@
 {
   "domain": "one_hu",
   "name": "Unofficial One Hungary",
-  "version": "0.0.1",
+  "version": "0.3.0",
   "documentation": "https://github.com/mrtiborvarga/ha-one-hu",
   "issue_tracker": "https://github.com/mrtiborvarga/ha-one-hu/issues",
   "codeowners": ["@mrtiborvarga"],
