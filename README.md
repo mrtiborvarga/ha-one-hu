@@ -1,6 +1,6 @@
 <p align="center">
   <img src="assets/logo.png" width="220">
-ungary
+</p>
 
 Unofficial Home Assistant integration for One Hungary mobile subscriptions.
 
@@ -30,7 +30,7 @@ Each subscription appears as a separate Home Assistant device.
 Example:
 
 ```text
-One Hungary 36309742918
+One Hungary 363097429XX
 ```
 
 ### Subscription Information
