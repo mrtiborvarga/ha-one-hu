@@ -43,6 +43,9 @@ async def async_setup_entry(
                 OneDataRemainingSensor(coordinator, msisdn),
                 OneDataUsedSensor(coordinator, msisdn),
                 OneDataUsedPercentageSensor(coordinator, msisdn),
+                OneDataExpiresInSensor(coordinator, msisdn),
+                OneTariffNameSensor(coordinator, msisdn),
+                OneSubscriptionStatusSensor(coordinator, msisdn),
             ]
         )
 
@@ -65,6 +68,17 @@ class OneBaseSensor(
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._msisdn = msisdn
+
+    @property
+    def service(self) -> dict[str, Any]:
+        """Return service information for this subscription."""
+        return self.coordinator.data.get(
+            "service_by_msisdn",
+            {},
+        ).get(
+            self._msisdn,
+            {},
+        )
 
     @property
     def usage(self) -> dict[str, Any]:
@@ -417,3 +431,71 @@ class OneDataUsedPercentageSensor(OneBaseSensor):
             .get("used_percentage")
         )
 
+class OneDataExpiresInSensor(OneBaseSensor):
+    """Data expiration in days."""
+
+    entity_description = SensorEntityDescription(
+        key="data_expires_in",
+        name="Data expires in",
+        icon="mdi:calendar-end",
+        native_unit_of_measurement="d",
+    )
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_data_expires_in"
+
+    @property
+    def native_value(self) -> int | None:
+        return (
+            self.usage
+            .get("data_summary", {})
+            .get("days_to_expire")
+        )
+
+class OneTariffNameSensor(OneBaseSensor):
+    """Tariff name."""
+
+    entity_description = SensorEntityDescription(
+        key="tariff_name",
+        name="Tariff",
+        icon="mdi:ticket-account",
+    )
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_tariff"
+
+    @property
+    def native_value(self) -> str | None:
+        return self.service.get("tariffName")
+
+class OneSubscriptionStatusSensor(OneBaseSensor):
+    """Subscription status."""
+
+    entity_description = SensorEntityDescription(
+        key="subscription_status",
+        name="Subscription status",
+        icon="mdi:sim",
+    )
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_subscription_status"
+
+    @property
+    def native_value(self) -> str | None:
+        status = self.service.get("status", {})
+        return status.get("name")

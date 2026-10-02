@@ -49,6 +49,7 @@ def _summarize_data_buckets(
     total_bytes = 0.0
     remaining_bytes = 0.0
     expiry_dates: list[int] = []
+    days_to_expire: list[int] = []
 
     for bucket in usage.get("buckets", []):
         if not isinstance(bucket, dict):
@@ -88,6 +89,10 @@ def _summarize_data_buckets(
         remaining_bytes += remaining_bucket_bytes
 
         end_date = bucket.get("endDate")
+        to_end = bucket.get("toEnd")
+
+        if isinstance(to_end, int):
+            days_to_expire.append(to_end)
 
         if isinstance(end_date, int):
             expiry_dates.append(end_date)
@@ -106,6 +111,7 @@ def _summarize_data_buckets(
         "used_gb": round(used_bytes / _BYTES_PER_GB, 3),
         "used_percentage": used_percentage,
         "expires_at": min(expiry_dates) if expiry_dates else None,
+        "days_to_expire": min(days_to_expire) if days_to_expire else None,
     }
 
 class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
@@ -142,6 +148,7 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         menu_items = services.get("menuItems", [])
         entities = services.get("entities", {})
 
+        service_by_msisdn: dict[str, dict[str, Any]] = {}
         usage_by_msisdn: dict[str, dict[str, Any]] = {}
 
         for menu_item in menu_items:
@@ -156,6 +163,7 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
             if not msisdn:
                 continue
+            service_by_msisdn[msisdn] = service
 
             try:
                 usage = await self.api.get_usage(msisdn)
@@ -188,4 +196,5 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "usage_by_msisdn": usage_by_msisdn,
             "last_successful_sync": datetime.now(UTC),
             "api_status": "Connected",
+            "service_by_msisdn": service_by_msisdn,
         }

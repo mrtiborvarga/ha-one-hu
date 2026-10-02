@@ -14,6 +14,7 @@ from .coordinator import OneDataUpdateCoordinator
 PLATFORMS = [
     Platform.SENSOR,
     Platform.BUTTON,
+    Platform.BINARY_SENSOR,
 ]
 
 async def async_setup_entry(
