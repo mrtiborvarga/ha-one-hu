@@ -9,7 +9,6 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
 )
-from homeassistant.const import CURRENCY_FORINT
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -117,8 +116,6 @@ class OneBalanceSensor(OneBaseSensor):
         key="balance",
         name="Balance",
         icon="mdi:cash",
-        native_unit_of_measurement=CURRENCY_FORINT,
-        device_class=SensorDeviceClass.MONETARY,
     )
 
     def __init__(
