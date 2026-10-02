@@ -1,16 +1,19 @@
 <p align="center">
-  <img src="assets/logo.png" width="220">
-</p>
+  <img src="assets/logo.png" width="160" alt="Unofficial Assistant](https://img.shields.io/tant-Custom%20Integration-blue
+![Hps://img.shields.io/badge/HACS-Compatible-green
+![Versionmg.shields.io/badge/Version-0.3.0-orange
 
-Unofficial Home Assistant integration for One Hungary mobile subscriptions.
+Unofficial Home Assistant integration for monitoring **One Hungary** mobile subscriptions, balances, mobile data usage, services and account-level information.
 
 > ⚠️ This project is not affiliated with, endorsed by, or maintained by One Hungary.
 
-## Features
+---
 
-### Account Overview
+# Features
 
-Dedicated account-level device:
+## Account-Level Monitoring
+
+Dedicated account device:
 
 ```text
 One Hungary
@@ -21,19 +24,23 @@ Provides:
 - Mobile Services Count
 - API Status
 - Last Successful Sync
-- Refresh Button
+- Manual Refresh
 
-### Mobile Subscription Monitoring
+---
 
-Each subscription appears as a separate Home Assistant device.
+## Subscription Monitoring
+
+Each mobile subscription appears as a separate Home Assistant device.
 
 Example:
 
 ```text
-One Hungary 363097429XX
+One Hungary 36309742918
 ```
 
-### Subscription Information
+---
+
+## Subscription Information
 
 Available sensors:
 
@@ -42,7 +49,9 @@ Available sensors:
 - Tariff
 - Subscription Status
 
-### Mobile Data Usage
+---
+
+## Mobile Data Usage
 
 Available sensors:
 
@@ -62,16 +71,22 @@ Data Used %         57.8 %
 Data Expires In     18 days
 ```
 
-### Bundle and Allowance Monitoring
+---
+
+## Allowance Monitoring
 
 Currently supported:
 
-- 100MB adat Remaining
-- 100MB adat Expires In
+```text
+100MB adat Remaining
+100MB adat Expires In
+```
 
-### Service Monitoring
+---
 
-The integration exposes service status information through binary sensors.
+## Service Monitoring
+
+The integration exposes service states through binary sensors.
 
 Examples:
 
@@ -86,23 +101,29 @@ Examples:
 - Roaming Welcome SMS
 - Adult Content Filtering
 
-### Binary Sensors
+---
+
+## Binary Sensors
+
+Available binary sensors:
 
 - Prepaid
 - eSIM
 - Barred
 
-## Installation
+---
 
-### HACS
+# Installation
+
+## HACS
 
 1. Open HACS
 2. Add this repository as a Custom Repository
-3. Category: Integration
+3. Category: **Integration**
 4. Install **Unofficial One Hungary**
 5. Restart Home Assistant
 
-### Manual
+## Manual Installation
 
 Copy:
 
@@ -118,11 +139,13 @@ to:
 
 Restart Home Assistant.
 
-## Authentication
+---
+
+# Authentication
 
 The integration currently uses an authenticated One Hungary browser session.
 
-### Cookie Header Extraction
+## Cookie Header Extraction
 
 1. Login to One Hungary
 2. Press `F12`
@@ -152,7 +175,9 @@ CSRF_TOKEN=...
 ...
 ```
 
-### Session Expiration
+---
+
+## Session Expiration
 
 Sessions eventually expire.
 
@@ -162,67 +187,174 @@ If authentication stops working:
 2. Obtain a fresh Cookie Header
 3. Update the integration configuration
 
-## Current Status
+---
 
-Current release: **v0.2.8 development branch**
+# Account Device
 
-Implemented:
+The integration creates an account-level device:
 
-✅ Account device
+```text
+One Hungary
+```
 
-✅ Subscription devices
+Entities:
 
-✅ Balance monitoring
+```text
+API Status
+Last Successful Sync
+Mobile Services Count
+Refresh
+```
 
-✅ Data monitoring
+---
 
-✅ Service status monitoring
+# Subscription Devices
 
-✅ API status monitoring
+Each discovered mobile subscription creates a separate Home Assistant device.
 
-✅ Manual refresh
+Example:
 
-## Screenshots
+```text
+One Hungary 36309742918
+```
 
-Add screenshots here after the account model is finalized.
+Entities:
 
-## Known Limitations
+### General
+
+```text
+Balance
+Days Available
+Tariff
+Subscription Status
+```
+
+### Data Usage
+
+```text
+Data Allowance
+Data Remaining
+Data Used
+Data Used Percentage
+Data Expires In
+```
+
+### Binary Sensors
+
+```text
+Prepaid
+eSIM
+Barred
+```
+
+### Service Status
+
+```text
+Call Hold
+Call Waiting
+Call Forwarding
+Caller ID
+MMS
+Roaming
+...
+```
+
+---
+
+# Update Interval
+
+Default update interval:
+
+```text
+300 seconds
+```
+
+Manual refresh is available through the account-level Refresh button.
+
+---
+
+# Security Warning
+
+The Cookie Header grants access to an active One Hungary session.
+
+Treat it like a password.
+
+Never share:
+
+- Cookie Headers
+- Session IDs
+- Authentication Tokens
+- HAR files
+- Screenshots containing authentication information
+
+If a Cookie Header is accidentally exposed:
+
+1. Sign out of One Hungary
+2. Sign in again
+3. Obtain a new Cookie Header
+
+---
+
+# Known Limitations
 
 - Browser Cookie Header authentication is still required
 - Session renewal is not yet automatic
 - One Hungary APIs are undocumented
 - APIs may change without notice
 
-## Roadmap
+---
 
-### v0.2.x
+# Roadmap
 
-- Account device improvements
-- Additional allowance sensors
-
-### v0.3.x
+## v0.3.x
 
 - Dynamic allowance discovery
-- Customer/account metadata
-- Enhanced diagnostics
+- Additional allowance sensors
+- Improved account-level metadata
 
-### Future
+## Future
 
-- Automated session renewal
-- Repair flow
+- Automatic session renewal
+- Repair workflow
 - Additional service management capabilities
+- HACS / Brands integration
 
-## Security Warning
+---
 
-Never share:
+# Troubleshooting
 
-- Cookie Header
-- Session identifiers
-- Authentication tokens
-- HAR files containing authentication information
+## Authentication Failed
 
-Treat these values like passwords.
+1. Login again
+2. Obtain a fresh Cookie Header
+3. Update the integration
 
-## License
+## Missing Sensors
+
+Reload the integration or restart Home Assistant.
+
+## Empty Usage Data
+
+Some subscription types do not expose the same level of information through the One Hungary APIs.
+
+---
+
+# Development
+
+Validate Python files:
+
+```bash
+python3 -m py_compile custom_components/one_hu/*.py
+```
+
+Validate manifest:
+
+```bash
+python3 -m json.tool custom_components/one_hu/manifest.json >/dev/null
+```
+
+---
+
+# License
 
 MIT License
