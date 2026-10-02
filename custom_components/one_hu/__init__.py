@@ -11,8 +11,10 @@ from .api import OneApiClient
 from .const import CONF_COOKIE_HEADER, DOMAIN
 from .coordinator import OneDataUpdateCoordinator
 
-PLATFORMS = [Platform.SENSOR]
-
+PLATFORMS = [
+    "sensor",
+    "button",
+]
 
 async def async_setup_entry(
     hass: HomeAssistant,

@@ -222,3 +222,11 @@ class OneBucketsCountSensor(OneBaseSensor):
         """Return the number of buckets."""
         buckets = self.usage.get("buckets", [])
         return len(buckets) if isinstance(buckets, list) else 0
+
+from datetime import datetime
+
+from homeassistant.components.sensor import (
+    SensorEntity,
+    SensorDeviceClass,
+)
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
