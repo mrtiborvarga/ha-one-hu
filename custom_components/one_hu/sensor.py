@@ -12,38 +12,9 @@ from homeassistant.components.sensor import (
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .account_device import account_device_info
 from .const import DOMAIN
 from .coordinator import OneDataUpdateCoordinator
-
-
-def _account_device_name(
-    coordinator: OneDataUpdateCoordinator,
-) -> str:
-    """Return the account-level device name."""
-    primary_account = coordinator.data.get(
-        "primary_account",
-        {},
-    )
-
-    account_title = primary_account.get("title")
-
-    if account_title:
-        return f"One Hungary ({account_title})"
-
-    return "One Hungary"
-
-
-def _account_device_info(
-    coordinator: OneDataUpdateCoordinator,
-) -> DeviceInfo:
-    """Return account-level device information."""
-    return DeviceInfo(
-        identifiers={(DOMAIN, "one_hu")},
-        name=_account_device_name(coordinator),
-        manufacturer="One Hungary",
-        model="One Hungary account",
-        configuration_url="https://www.one.hu",
-    )
 
 
 async def async_setup_entry(
@@ -134,7 +105,7 @@ class OneAccountSensor(
     @property
     def device_info(self) -> DeviceInfo:
         """Return account-level device information."""
-        return _account_device_info(self.coordinator)
+        return account_device_info(self.coordinator)
 
 
 class OneBaseSensor(

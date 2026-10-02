@@ -234,11 +234,11 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "service_by_msisdn": service_by_msisdn,
             "accounts": accounts,
             "primary_account": next(
-            (
-                account
-                 for account in accounts
-                if account.get("primary")
+                (
+                    account
+                    for account in accounts
+                    if account.get("primary")
+                ),
+                {},
             ),
-            {},
-),
         }
