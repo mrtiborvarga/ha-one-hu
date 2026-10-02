@@ -145,6 +145,7 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             ) from err
 
         services = services_response.get("services", {})
+        accounts = services_response.get("accounts", [])
         menu_items = services.get("menuItems", [])
         entities = services.get("entities", {})
 
@@ -187,6 +188,40 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 }
 
             usage["data_summary"] = _summarize_data_buckets(usage)
+
+            usage["allowances"] = []
+            usage["allowance_summary"] = {}
+
+            for bundle in usage.get("bundles", []):
+                for allowance in bundle.get("allowances", []):
+
+                    allowance_name = (
+                        allowance
+                        .get("offer", {})
+                        .get("name")
+                    )
+
+                    allowance_data = {
+                        "name": allowance_name,
+                        "remaining": allowance.get("counter"),
+                        "units": allowance.get("units"),
+                        "days_to_expire": allowance.get("toEnd"),
+                        "type": allowance.get(
+                            "offer",
+                            {},
+                        ).get("domainType"),
+                    }
+
+                    usage["allowances"].append(
+                        allowance_data
+                    )
+
+                    if allowance_name:
+                        usage["allowance_summary"][
+                            allowance_name
+                        ] = allowance_data
+
+        
             usage_by_msisdn[msisdn] = usage
 
         return {
@@ -197,4 +232,13 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "last_successful_sync": datetime.now(UTC),
             "api_status": "Connected",
             "service_by_msisdn": service_by_msisdn,
+            "accounts": accounts,
+            "primary_account": next(
+            (
+                account
+                 for account in accounts
+                if account.get("primary")
+            ),
+            {},
+),
         }

@@ -46,6 +46,8 @@ async def async_setup_entry(
                 OneDataExpiresInSensor(coordinator, msisdn),
                 OneTariffNameSensor(coordinator, msisdn),
                 OneSubscriptionStatusSensor(coordinator, msisdn),
+                One100MBRemainingSensor(coordinator, msisdn),
+                One100MBExpiresInSensor(coordinator, msisdn),
             ]
         )
 
@@ -109,13 +111,6 @@ class OneBaseSensor(
             model="Mobile subscription",
         )
 
-
-class OneMobileServicesCountSensor(
-    CoordinatorEntity[OneDataUpdateCoordinator],
-    SensorEntity,
-):
-    """Number of mobile subscriptions."""
-
     _attr_has_entity_name = True
     _attr_name = "Mobile services count"
     _attr_unique_id = "one_hu_mobile_services_count"
@@ -129,15 +124,6 @@ class OneMobileServicesCountSensor(
             name="One Hungary",
             manufacturer="One Hungary",
             configuration_url="https://www.one.hu",
-        )
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return integration device."""
-        return DeviceInfo(
-            identifiers={(DOMAIN, "one_hu")},
-            name="One Hungary",
-            manufacturer="One Hungary",
         )
 
     @property
@@ -231,6 +217,12 @@ class OneBundlesCountSensor(OneBaseSensor):
         """Initialize the bundles sensor."""
         super().__init__(coordinator, msisdn)
         self._attr_unique_id = f"{msisdn}_bundles_count"
+
+    @property
+    def extra_state_attributes(self):
+        return {
+            "allowances": self.usage.get("allowances", [])
+        }
 
     @property
     def native_value(self) -> int:
@@ -499,3 +491,57 @@ class OneSubscriptionStatusSensor(OneBaseSensor):
     def native_value(self) -> str | None:
         status = self.service.get("status", {})
         return status.get("name")
+
+class One100MBRemainingSensor(OneBaseSensor):
+    """100MB adat remaining."""
+
+    _attr_name = "100MB adat Remaining"
+    _attr_icon = "mdi:database"
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_100mb_adat_remaining"
+
+    @property
+    def native_value(self):
+        allowance = (
+            self.usage
+            .get("allowance_summary", {})
+            .get("100MB adat")
+        )
+
+        if not allowance:
+            return None
+
+        return allowance.get("remaining")
+
+class One100MBExpiresInSensor(OneBaseSensor):
+    """100MB adat expires in."""
+
+    _attr_name = "100MB adat Expires In"
+    _attr_icon = "mdi:calendar-clock"
+
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        msisdn: str,
+    ) -> None:
+        super().__init__(coordinator, msisdn)
+        self._attr_unique_id = f"{msisdn}_100mb_adat_expires_in"
+
+    @property
+    def native_value(self):
+        allowance = (
+            self.usage
+            .get("allowance_summary", {})
+            .get("100MB adat")
+        )
+
+        if not allowance:
+            return None
+
+        return allowance.get("days_to_expire")
