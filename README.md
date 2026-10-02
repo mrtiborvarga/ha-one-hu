@@ -79,7 +79,7 @@ Each mobile subscription appears as a separate Home Assistant device.
 Example:
 
 ```text
-One Hungary 36309742918
+One Hungary 3670XXXXXXX
 ```
 
 ---
