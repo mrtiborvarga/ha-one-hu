@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Unofficial One Hungary
 
 Unofficial Home Assistant custom integration for displaying One Hungary mobile subscriptions and usage information.
@@ -407,7 +406,7 @@ Each discovered mobile subscription creates a separate Home Assistant device.
 Example:
 
 ```text
-One Hungary 36309742918
+One Hungary 3670XXXXXXX
 ```
 
 Entities:
@@ -548,6 +547,5 @@ python3 -m json.tool custom_components/one_hu/manifest.json >/dev/null
 ---
 
 # License
->>>>>>> develop
 
 MIT License
