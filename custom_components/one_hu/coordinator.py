@@ -1,4 +1,4 @@
-"""Data coordinator for Unofficial One Hungary."""
+"""Data coordinator for One Hungary Unofficial."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Unofficial One Hungary integration."""
+"""One Hungary Unofficial integration."""
 
 from __future__ import annotations
 

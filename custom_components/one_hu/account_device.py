@@ -1,4 +1,4 @@
-"""Account-level device helpers for Unofficial One Hungary."""
+"""Account-level device helpers for One Hungary Unofficial."""
 
 from __future__ import annotations
 

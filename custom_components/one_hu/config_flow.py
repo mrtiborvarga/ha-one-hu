@@ -1,4 +1,4 @@
-"""Config flow for Unofficial One Hungary."""
+"""Config flow for One Hungary Unofficial."""
 
 from __future__ import annotations
 

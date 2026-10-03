@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="custom_components/one_hu/assets/logo.png" width="180" alt="Unofficial One Hungary logo">
+  <img src="custom_components/one_hu/assets/logo.png" width="180" alt="One Hungary Unofficial logo">
 </p>
 
-# Unofficial One Hungary
+# One Hungary Unofficial
 
 ![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Custom%20Integration-41BDF5)
 ![HACS](https://img.shields.io/badge/HACS-Compatible-41BDF5)
@@ -134,10 +134,10 @@ If a service is not reported for a subscription, the corresponding entity can be
    ```
 
 4. Select **Integration** as the category.
-5. Install **Unofficial One Hungary**.
+5. Install **One Hungary Unofficial**.
 6. Restart Home Assistant.
 7. Open **Settings > Devices & services > Add integration**.
-8. Search for **Unofficial One Hungary**.
+8. Search for **One Hungary Unofficial**.
 
 ### Manual installation
 
@@ -159,7 +159,7 @@ The resulting path must be:
 /config/custom_components/one_hu
 ```
 
-Restart Home Assistant, then add **Unofficial One Hungary** under **Settings > Devices & services**.
+Restart Home Assistant, then add **One Hungary Unofficial** under **Settings > Devices & services**.
 
 ## Authentication
 

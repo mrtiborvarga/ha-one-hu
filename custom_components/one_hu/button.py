@@ -1,4 +1,4 @@
-"""Buttons for Unofficial One Hungary."""
+"""Buttons for One Hungary Unofficial."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Sensors for Unofficial One Hungary."""
+"""Sensors for One Hungary Unofficial."""
 
 from __future__ import annotations
 

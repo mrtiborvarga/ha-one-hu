@@ -1,4 +1,4 @@
-"""API client for Unofficial One Hungary."""
+"""API client for One Hungary Unofficial."""
 
 from __future__ import annotations
 

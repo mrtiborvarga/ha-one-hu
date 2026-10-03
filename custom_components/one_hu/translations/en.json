@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Unofficial One Hungary",
+        "title": "One Hungary Unofficial",
         "description": "Paste the complete Cookie header from a logged-in One Hungary browser session. Example: JSESSIONID=...; CSRF_TOKEN=...; ...",
         "data": {
           "cookie_header": "Cookie Header"

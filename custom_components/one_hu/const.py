@@ -1,4 +1,4 @@
-"""Constants for Unofficial One Hungary."""
+"""Constants for One Hungary Unofficial."""
 
 DOMAIN = "one_hu"
 
