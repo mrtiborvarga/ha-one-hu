@@ -12,7 +12,11 @@ from homeassistant.components.sensor import (
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .account_device import account_device_info
+from .account_device import (
+    account_device_info,
+    account_identifier,
+    account_key,
+)
 from .const import DOMAIN
 from .coordinator import OneDataUpdateCoordinator
 
@@ -102,6 +106,15 @@ class OneAccountSensor(
 
     _attr_has_entity_name = True
 
+    def __init__(
+        self,
+        coordinator: OneDataUpdateCoordinator,
+        key: str,
+    ) -> None:
+        """Initialize an account-level sensor."""
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{account_key(coordinator)}_{key}"
+
     @property
     def device_info(self) -> DeviceInfo:
         """Return account-level device information."""
@@ -166,7 +179,7 @@ class OneBaseSensor(
             name=f"One Hungary {self._msisdn}",
             manufacturer="One Hungary",
             model="Mobile subscription",
-            via_device=(DOMAIN, "one_hu"),
+            via_device=account_identifier(self.coordinator),
         )
 
 
@@ -174,8 +187,11 @@ class OneMobileServicesCountSensor(OneAccountSensor):
     """Number of mobile subscriptions."""
 
     _attr_name = "Mobile services count"
-    _attr_unique_id = "one_hu_mobile_services_count"
     _attr_icon = "mdi:sim"
+
+    def __init__(self, coordinator: OneDataUpdateCoordinator) -> None:
+        """Initialize the account mobile-services sensor."""
+        super().__init__(coordinator, "mobile_services_count")
 
     @property
     def native_value(self) -> int:
@@ -190,9 +206,12 @@ class OneLastSuccessfulSyncSensor(OneAccountSensor):
     """Last successful synchronization."""
 
     _attr_name = "Last successful sync"
-    _attr_unique_id = "one_hu_last_successful_sync"
     _attr_icon = "mdi:clock-check"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
+
+    def __init__(self, coordinator: OneDataUpdateCoordinator) -> None:
+        """Initialize the last-successful-sync sensor."""
+        super().__init__(coordinator, "last_successful_sync")
 
     @property
     def native_value(self):
@@ -206,8 +225,11 @@ class OneApiStatusSensor(OneAccountSensor):
     """One Hungary API status."""
 
     _attr_name = "API status"
-    _attr_unique_id = "one_hu_api_status"
     _attr_icon = "mdi:lan-connect"
+
+    def __init__(self, coordinator: OneDataUpdateCoordinator) -> None:
+        """Initialize the account API-status sensor."""
+        super().__init__(coordinator, "api_status")
 
     @property
     def native_value(self) -> str:
