@@ -149,11 +149,23 @@ def perform_login(page: Page, username: str, password: str) -> None:
     page.fill(USERNAME_SELECTOR, username)
     page.fill(PASSWORD_SELECTOR, password)
 
+    # The login button starts disabled and is only enabled once an invisible
+    # reCAPTCHA v3 check completes in the background, so the click itself may
+    # need to wait a bit. Once clicked, it navigates all the way through the
+    # OIDC callback to the account page, where #loginForm:loginButton no
+    # longer exists. Playwright's own post-click actionability re-check then
+    # keeps re-resolving that (now gone) element until it hits the click
+    # timeout, even though the navigation already succeeded. no_wait_after
+    # skips that re-check; page.wait_for_url below is the real completion
+    # check regardless.
     login_button = page.locator(LOGIN_BUTTON_SELECTOR)
-    if login_button.count() > 0:
-        login_button.first.click()
-    else:
-        page.press(PASSWORD_SELECTOR, "Enter")
+    try:
+        if login_button.count() > 0:
+            login_button.first.click(timeout=LOGIN_TIMEOUT_MS, no_wait_after=True)
+        else:
+            page.press(PASSWORD_SELECTOR, "Enter", no_wait_after=True)
+    except Exception:  # noqa: BLE001
+        pass
 
     page.wait_for_url(f"{BASE_URL}/one-fiok/**", timeout=LOGIN_TIMEOUT_MS)
 
