@@ -1,0 +1,13 @@
+[Unit]
+Description=Periodically refresh the One Hungary cookie export
+
+[Timer]
+# Headless refresh only re-exports cookies from the existing, already
+# authenticated profile; it never attempts a new login. Every 15 minutes
+# keeps cookie.json reasonably fresh without hammering one.hu.
+OnBootSec=5min
+OnUnitActiveSec=15min
+Unit=one-hu-login.service
+
+[Install]
+WantedBy=timers.target

@@ -14,3 +14,7 @@ venv/
 *.bak
 *.old
 *.orig
+one-browser-profile/
+one_storage_state.json
+*.png
+auth-page.html

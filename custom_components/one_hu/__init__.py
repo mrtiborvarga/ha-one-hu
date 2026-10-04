@@ -8,7 +8,15 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .api import OneApiClient
-from .const import CONF_COOKIE_HEADER, DOMAIN
+from .auth import CookieFileAuthProvider, CookieHeaderAuthProvider
+from .const import (
+    AUTH_MODE_COOKIE_FILE,
+    AUTH_MODE_COOKIE_HEADER,
+    CONF_AUTH_MODE,
+    CONF_COOKIE_FILE_PATH,
+    CONF_COOKIE_HEADER,
+    DOMAIN,
+)
 from .coordinator import OneDataUpdateCoordinator
 
 PLATFORMS = [
@@ -29,9 +37,21 @@ async def async_setup_entry(
     max_field_size=65536,
     )
 
+    auth_mode = entry.data.get(CONF_AUTH_MODE, AUTH_MODE_COOKIE_HEADER)
+
+    if auth_mode == AUTH_MODE_COOKIE_FILE:
+        auth_provider = CookieFileAuthProvider(
+            hass=hass,
+            cookie_file_path=entry.data[CONF_COOKIE_FILE_PATH],
+        )
+    else:
+        auth_provider = CookieHeaderAuthProvider(
+            cookie_header=entry.data[CONF_COOKIE_HEADER],
+        )
+
     api = OneApiClient(
         session=session,
-        cookie_header=entry.data[CONF_COOKIE_HEADER],
+        auth_provider=auth_provider,
     )
 
     coordinator = OneDataUpdateCoordinator(

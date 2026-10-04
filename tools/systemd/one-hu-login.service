@@ -1,0 +1,22 @@
+[Unit]
+Description=Refresh the One Hungary cookie export for Home Assistant
+
+[Service]
+Type=oneshot
+# Adjust these paths for your environment.
+WorkingDirectory=/opt/one-hu-login
+# Assumes this unit runs on the same host as Home Assistant, so the cookie
+# file is written straight into the integration's folder. If this runs on a
+# separate machine, write to a local path instead (e.g. drop the
+# --cookie-output override to use the default ./cookie.json) and add a
+# second ExecStart= line that copies/syncs it to the Home Assistant host.
+ExecStart=/opt/one-hu-login/.venv/bin/python one_login.py \
+    --profile-dir /opt/one-hu-login/one-browser-profile \
+    --cookie-output /config/custom_components/one_hu/cookie.json
+# Uncomment and set if you'd rather not store credentials in the service file,
+# e.g. via systemd-creds or an EnvironmentFile with 0600 permissions:
+# EnvironmentFile=/opt/one-hu-login/one-hu-login.env
+
+# A non-zero exit means the stored session expired and needs a --headed
+# re-login; don't restart automatically, surface the failure instead.
+Restart=no

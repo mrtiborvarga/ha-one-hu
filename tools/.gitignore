@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+one-browser-profile/
+cookie*.json

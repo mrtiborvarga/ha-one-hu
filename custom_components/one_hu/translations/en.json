@@ -3,13 +3,31 @@
     "step": {
       "user": {
         "title": "One Hungary Unofficial",
+        "description": "Choose how Home Assistant should authenticate with One Hungary.",
+        "data": {
+          "auth_mode": "Authentication Mode"
+        }
+      },
+      "cookie_header": {
+        "title": "Cookie Header",
         "description": "Paste the complete Cookie header from a logged-in One Hungary browser session. Example: JSESSIONID=...; CSRF_TOKEN=...; ...",
         "data": {
           "cookie_header": "Cookie Header"
         }
+      },
+      "cookie_file": {
+        "title": "Browser Profile (Cookie Export File)",
+        "description": "Enter the path to the cookie.json file exported by tools/one_login.py. Home Assistant only reads this file, it never launches a browser itself. Example: /config/custom_components/one_hu/cookie.json",
+        "data": {
+          "cookie_file_path": "Cookie File Path"
+        }
       }
     },
-    "error": {},
+    "error": {
+      "invalid_auth": "The One Hungary session is invalid or expired. Re-run tools/one_login.py and try again.",
+      "cannot_connect": "Unable to connect to One Hungary.",
+      "unknown": "Unexpected error occurred."
+    },
     "abort": {}
   }
 }
