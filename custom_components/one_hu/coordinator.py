@@ -114,6 +114,57 @@ def _summarize_data_buckets(
         "days_to_expire": min(days_to_expire) if days_to_expire else None,
     }
 
+
+def _summarize_postpaid_data(
+    allowances_by_category: dict[str, list[dict[str, Any]]],
+) -> dict[str, float | int | None]:
+    """Summarize postpaid (spr-usages) data allowances in a common unit."""
+    total_bytes = 0.0
+    remaining_bytes = 0.0
+    days_to_expire: list[int] = []
+
+    for category, items in allowances_by_category.items():
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+
+            item_type = str(item.get("type") or category)
+
+            if "Data" not in item_type:
+                continue
+
+            total_bytes += _quantity_to_bytes(
+                item.get("initialVolume"),
+                str(item.get("initialUnit", "")),
+            )
+            remaining_bytes += _quantity_to_bytes(
+                item.get("leftVolume"),
+                str(item.get("leftUnit", "")),
+            )
+
+            reset_days = item.get("daysBeforeReset")
+
+            if isinstance(reset_days, int):
+                days_to_expire.append(reset_days)
+
+    used_bytes = max(total_bytes - remaining_bytes, 0.0)
+
+    used_percentage = (
+        round((used_bytes / total_bytes) * 100, 1)
+        if total_bytes > 0
+        else None
+    )
+
+    return {
+        "total_gb": round(total_bytes / _BYTES_PER_GB, 3),
+        "remaining_gb": round(remaining_bytes / _BYTES_PER_GB, 3),
+        "used_gb": round(used_bytes / _BYTES_PER_GB, 3),
+        "used_percentage": used_percentage,
+        "expires_at": None,
+        "days_to_expire": min(days_to_expire) if days_to_expire else None,
+    }
+
+
 class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Coordinate updates from the One Hungary API."""
 
@@ -187,41 +238,116 @@ class OneDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     "buckets": [],
                 }
 
-            usage["data_summary"] = _summarize_data_buckets(usage)
+            postpaid_allowances: dict[str, list[dict[str, Any]]] = {}
+
+            if usage.get("retrieveFailed"):
+                # Postpaid ("havidíjas") lines aren't served by
+                # ocs-usages; fall back to the postpaid data/voice
+                # usage endpoints instead.
+                for endpoint_getter in (
+                    self.api.get_spr_usage,
+                    self.api.get_rbm_usage,
+                ):
+                    try:
+                        postpaid_usage = await endpoint_getter(msisdn)
+                    except Exception as err:  # noqa: BLE001
+                        _LOGGER.debug(
+                            "Postpaid usage fallback failed for %s via %s: %s",
+                            msisdn,
+                            endpoint_getter.__name__,
+                            err,
+                        )
+                        continue
+
+                    if not isinstance(postpaid_usage, dict):
+                        continue
+
+                    if postpaid_usage.get("retrieveFailed"):
+                        continue
+
+                    postpaid_allowances.update(
+                        postpaid_usage.get("allowances", {}) or {}
+                    )
+
+                if postpaid_allowances:
+                    usage = {
+                        "retrieveFailed": False,
+                        "balance": None,
+                        "daysAvailable": None,
+                        "bundles": [],
+                        "buckets": [],
+                    }
+
+            usage["data_summary"] = (
+                _summarize_postpaid_data(postpaid_allowances)
+                if postpaid_allowances
+                else _summarize_data_buckets(usage)
+            )
 
             usage["allowances"] = []
             usage["allowance_summary"] = {}
 
-            for bundle in usage.get("bundles", []):
-                for allowance in bundle.get("allowances", []):
+            if postpaid_allowances:
+                for items in postpaid_allowances.values():
+                    for allowance in items:
+                        allowance_name = allowance.get("name")
 
-                    allowance_name = (
-                        allowance
-                        .get("offer", {})
-                        .get("name")
-                    )
+                        allowance_data = {
+                            "name": allowance_name,
+                            "remaining": (
+                                allowance.get("leftVolume")
+                                if allowance.get("leftVolume")
+                                is not None
+                                else allowance.get(
+                                    "remainingAllowance"
+                                )
+                            ),
+                            "units": (
+                                allowance.get("leftUnit")
+                                or allowance.get("unit")
+                            ),
+                            "days_to_expire": allowance.get(
+                                "daysBeforeReset"
+                            ),
+                            "type": allowance.get("type"),
+                        }
 
-                    allowance_data = {
-                        "name": allowance_name,
-                        "remaining": allowance.get("counter"),
-                        "units": allowance.get("units"),
-                        "days_to_expire": allowance.get("toEnd"),
-                        "type": allowance.get(
-                            "offer",
-                            {},
-                        ).get("domainType"),
-                    }
+                        usage["allowances"].append(allowance_data)
 
-                    usage["allowances"].append(
-                        allowance_data
-                    )
+                        if allowance_name:
+                            usage["allowance_summary"][
+                                allowance_name
+                            ] = allowance_data
+            else:
+                for bundle in usage.get("bundles", []):
+                    for allowance in bundle.get("allowances", []):
 
-                    if allowance_name:
-                        usage["allowance_summary"][
-                            allowance_name
-                        ] = allowance_data
+                        allowance_name = (
+                            allowance
+                            .get("offer", {})
+                            .get("name")
+                        )
 
-        
+                        allowance_data = {
+                            "name": allowance_name,
+                            "remaining": allowance.get("counter"),
+                            "units": allowance.get("units"),
+                            "days_to_expire": allowance.get("toEnd"),
+                            "type": allowance.get(
+                                "offer",
+                                {},
+                            ).get("domainType"),
+                        }
+
+                        usage["allowances"].append(
+                            allowance_data
+                        )
+
+                        if allowance_name:
+                            usage["allowance_summary"][
+                                allowance_name
+                            ] = allowance_data
+
             usage_by_msisdn[msisdn] = usage
 
         return {

@@ -103,9 +103,13 @@ class OneApiClient:
             response.raise_for_status()
             return await response.json(content_type=None)
 
-    async def get_usage(self, msisdn: str) -> dict[str, Any]:
-        """Return usage information for a mobile subscription."""
-        url = f"{self.BASE_URL}/o/ecare/usages/ocs-usages"
+    async def _get_usage_endpoint(
+        self,
+        endpoint: str,
+        msisdn: str,
+    ) -> dict[str, Any]:
+        """Return usage information from a specific usages endpoint."""
+        url = f"{self.BASE_URL}/o/ecare/usages/{endpoint}"
         headers = await self._async_headers()
 
         async with self._session.get(
@@ -120,3 +124,15 @@ class OneApiClient:
 
             response.raise_for_status()
             return await response.json(content_type=None)
+
+    async def get_usage(self, msisdn: str) -> dict[str, Any]:
+        """Return prepaid (OCS) usage information for a mobile subscription."""
+        return await self._get_usage_endpoint("ocs-usages", msisdn)
+
+    async def get_spr_usage(self, msisdn: str) -> dict[str, Any]:
+        """Return postpaid data-allowance usage for a mobile subscription."""
+        return await self._get_usage_endpoint("spr-usages", msisdn)
+
+    async def get_rbm_usage(self, msisdn: str) -> dict[str, Any]:
+        """Return postpaid voice-allowance usage for a mobile subscription."""
+        return await self._get_usage_endpoint("rbm-usages", msisdn)
