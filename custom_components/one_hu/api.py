@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from http.cookies import SimpleCookie
 from typing import TYPE_CHECKING, Any
 
 import aiohttp
@@ -35,18 +34,25 @@ class OneApiClient:
 
     @staticmethod
     def _extract_csrf_token(cookie_header: str) -> str:
-        """Extract the CSRF token from the Cookie header."""
-        cookies = SimpleCookie()
-        cookies.load(cookie_header)
+        """Extract the CSRF token from the Cookie header.
 
-        csrf_cookie = cookies.get("CSRF_TOKEN")
+        A request ``Cookie:`` header is just ``name=value`` pairs separated
+        by ``;``, where the value may itself legally contain ``=``/``&``
+        (e.g. OneTrust's ``OptanonConsent=isGpcEnabled=0&datestamp=...``).
+        ``http.cookies.SimpleCookie`` targets the stricter ``Set-Cookie``
+        value grammar and desyncs on such values, silently dropping every
+        cookie that follows - including ``CSRF_TOKEN`` if it comes later in
+        the header. Parse it manually instead.
+        """
+        for part in cookie_header.split(";"):
+            name, _, value = part.strip().partition("=")
 
-        if csrf_cookie is None:
-            raise OneApiAuthenticationError(
-                "CSRF_TOKEN was not found in the Cookie header"
-            )
+            if name == "CSRF_TOKEN":
+                return value
 
-        return csrf_cookie.value
+        raise OneApiAuthenticationError(
+            "CSRF_TOKEN was not found in the Cookie header"
+        )
 
     async def _async_headers(self) -> dict[str, str]:
         """Return API request headers for the current session."""
