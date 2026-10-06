@@ -24,7 +24,7 @@ class OneRefreshButton(
     """Manual refresh button."""
 
     _attr_has_entity_name = True
-    _attr_name = "Refresh"
+    _attr_translation_key = "refresh"
     _attr_icon = "mdi:refresh"
 
     def __init__(self, coordinator: OneDataUpdateCoordinator) -> None:

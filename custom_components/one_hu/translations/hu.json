@@ -1,0 +1,146 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "One Hungary Unofficial",
+        "description": "Válassza ki, hogyan hitelesítse a Home Assistant a One Hungary szolgáltatást.",
+        "data": {
+          "auth_mode": "Hitelesítési mód"
+        }
+      },
+      "cookie_header": {
+        "title": "Cookie fejléc",
+        "description": "Illessze be a teljes Cookie fejlécet egy bejelentkezett One Hungary böngészőmunkamenetből. Példa: JSESSIONID=...; CSRF_TOKEN=...; ...",
+        "data": {
+          "cookie_header": "Cookie fejléc"
+        }
+      },
+      "cookie_file": {
+        "title": "Böngészőprofil (cookie exportfájl)",
+        "description": "Adja meg a tools/one_login.py szkript által exportált cookie.json fájl elérési útját. A Home Assistant csak beolvassa ezt a fájlt, böngészőt nem indít. Példa: /config/custom_components/one_hu/cookie.json",
+        "data": {
+          "cookie_file_path": "Cookie fájl elérési útja"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "A One Hungary munkamenet érvénytelen vagy lejárt. Futtassa újra a tools/one_login.py szkriptet, majd próbálja újra.",
+      "cannot_connect": "Nem sikerült csatlakozni a One Hungary szolgáltatáshoz.",
+      "unknown": "Váratlan hiba történt."
+    },
+    "abort": {}
+  },
+  "entity": {
+    "sensor": {
+      "mobile_services_count": {
+        "name": "Mobil szolgáltatások száma"
+      },
+      "last_successful_sync": {
+        "name": "Utolsó sikeres szinkronizálás"
+      },
+      "api_status": {
+        "name": "API állapot"
+      },
+      "balance": {
+        "name": "Egyenleg"
+      },
+      "days_available": {
+        "name": "Elérhető napok"
+      },
+      "bundles_count": {
+        "name": "Csomagok száma"
+      },
+      "buckets_count": {
+        "name": "Keretek száma"
+      },
+      "data_allowance": {
+        "name": "Adatkeret"
+      },
+      "data_remaining": {
+        "name": "Hátralévő adat"
+      },
+      "data_used": {
+        "name": "Felhasznált adat"
+      },
+      "data_used_percentage": {
+        "name": "Felhasznált adat százaléka"
+      },
+      "data_expires_in": {
+        "name": "Adat lejáratáig"
+      },
+      "tariff_name": {
+        "name": "Díjcsomag"
+      },
+      "subscription_status": {
+        "name": "Előfizetés állapota"
+      },
+      "100mb_adat_remaining": {
+        "name": "100MB csomag hátralévő mennyisége"
+      },
+      "100mb_adat_expires_in": {
+        "name": "100MB csomag lejáratáig"
+      }
+    },
+    "binary_sensor": {
+      "prepaid": {
+        "name": "Feltöltőkártyás"
+      },
+      "esim": {
+        "name": "eSIM"
+      },
+      "barred": {
+        "name": "Letiltva"
+      },
+      "call_hold": {
+        "name": "Hívástartás"
+      },
+      "roaming_welcome_sms": {
+        "name": "Roaming üdvözlő SMS"
+      },
+      "caller_id_restriction": {
+        "name": "Hívószámkijelzés tiltás"
+      },
+      "mobile_mms_service": {
+        "name": "Mobil MMS szolgáltatás"
+      },
+      "call_forwarding_busy": {
+        "name": "Hívásátirányítás (foglalt)"
+      },
+      "call_forwarding_unconditional": {
+        "name": "Hívásátirányítás (feltétel nélküli)"
+      },
+      "call_forwarding": {
+        "name": "Hívásátirányítás"
+      },
+      "call_waiting": {
+        "name": "Hívás várakoztatás"
+      },
+      "mobile_purchase_service": {
+        "name": "Mobilvásárlás szolgáltatás"
+      },
+      "call_forwarding_unreachable": {
+        "name": "Hívásátirányítás (nem elérhető)"
+      },
+      "adult_content_filter": {
+        "name": "Hatósági felnőtt tartalom szűrés"
+      },
+      "call_notification_service": {
+        "name": "Hívásértesítő szolgáltatás"
+      },
+      "call_forwarding_no_answer": {
+        "name": "Hívásátirányítás (nem válaszol)"
+      },
+      "roaming_service": {
+        "name": "Roaming szolgáltatás"
+      },
+      "caller_id": {
+        "name": "Hívószámkijelzés"
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Frissítés"
+      }
+    }
+  }
+}

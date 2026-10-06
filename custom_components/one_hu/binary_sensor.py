@@ -9,21 +9,21 @@ from .const import DOMAIN
 from .coordinator import OneDataUpdateCoordinator
 
 EXTRA_SERVICE_DESCRIPTIONS = (
-    ("331078", "Hívástartás"),
-    ("331089", "Roaming üdvözlő SMS"),
-    ("331079", "Hívószámkijelzés tiltás"),
-    ("331085", "Mobil MMS szolgáltatás"),
-    ("331074", "Hívásátirányítás (foglalt)"),
-    ("331075", "Hívásátirányítás (feltétel nélküli)"),
-    ("331076", "Hívásátirányítás"),
-    ("331077", "Hívás várakoztatás"),
-    ("331082", "Mobilvásárlás szolgáltatás"),
-    ("331072", "Hívásátirányítás (nem elérhető)"),
-    ("329570", "Hatósági felnőtt tartalom szűrés"),
-    ("331084", "Hívásértesítő szolgáltatás"),
-    ("331073", "Hívásátirányítás (nem válaszol)"),
-    ("331090", "Roaming szolgáltatás"),
-    ("331080", "Hívószámkijelzés"),
+    ("331078", "call_hold"),
+    ("331089", "roaming_welcome_sms"),
+    ("331079", "caller_id_restriction"),
+    ("331085", "mobile_mms_service"),
+    ("331074", "call_forwarding_busy"),
+    ("331075", "call_forwarding_unconditional"),
+    ("331076", "call_forwarding"),
+    ("331077", "call_waiting"),
+    ("331082", "mobile_purchase_service"),
+    ("331072", "call_forwarding_unreachable"),
+    ("329570", "adult_content_filter"),
+    ("331084", "call_notification_service"),
+    ("331073", "call_forwarding_no_answer"),
+    ("331090", "roaming_service"),
+    ("331080", "caller_id"),
 )
 
 async def async_setup_entry(
@@ -50,9 +50,9 @@ async def async_setup_entry(
                 coordinator,
                 msisdn,
                 service_id,
-                service_name,
+                translation_key,
             )
-            for service_id, service_name in EXTRA_SERVICE_DESCRIPTIONS
+            for service_id, translation_key in EXTRA_SERVICE_DESCRIPTIONS
         )
     async_add_entities(entities)
 
@@ -95,7 +95,7 @@ class OneBaseBinarySensor(
 class OnePrepaidBinarySensor(OneBaseBinarySensor):
     """Prepaid status."""
 
-    _attr_name = "Prepaid"
+    _attr_translation_key = "prepaid"
 
     def __init__(
         self,
@@ -113,7 +113,7 @@ class OnePrepaidBinarySensor(OneBaseBinarySensor):
 class OneESimBinarySensor(OneBaseBinarySensor):
     """eSIM status."""
 
-    _attr_name = "eSIM"
+    _attr_translation_key = "esim"
 
     def __init__(
         self,
@@ -131,7 +131,7 @@ class OneESimBinarySensor(OneBaseBinarySensor):
 class OneBarredBinarySensor(OneBaseBinarySensor):
     """Barred status."""
 
-    _attr_name = "Barred"
+    _attr_translation_key = "barred"
 
     def __init__(
         self,
@@ -156,13 +156,13 @@ class OneExtraServiceBinarySensor(OneBaseBinarySensor):
         coordinator: OneDataUpdateCoordinator,
         msisdn: str,
         service_id: str,
-        service_name: str,
+        translation_key: str,
     ) -> None:
         """Initialize the extra service binary sensor."""
         super().__init__(coordinator, msisdn)
 
         self._service_id = service_id
-        self._attr_name = service_name
+        self._attr_translation_key = translation_key
         self._attr_unique_id = (
             f"{msisdn}_extra_service_{service_id}"
         )

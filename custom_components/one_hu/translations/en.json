@@ -29,5 +29,118 @@
       "unknown": "Unexpected error occurred."
     },
     "abort": {}
+  },
+  "entity": {
+    "sensor": {
+      "mobile_services_count": {
+        "name": "Mobile services count"
+      },
+      "last_successful_sync": {
+        "name": "Last successful sync"
+      },
+      "api_status": {
+        "name": "API status"
+      },
+      "balance": {
+        "name": "Balance"
+      },
+      "days_available": {
+        "name": "Days available"
+      },
+      "bundles_count": {
+        "name": "Bundles count"
+      },
+      "buckets_count": {
+        "name": "Buckets count"
+      },
+      "data_allowance": {
+        "name": "Data allowance"
+      },
+      "data_remaining": {
+        "name": "Data remaining"
+      },
+      "data_used": {
+        "name": "Data used"
+      },
+      "data_used_percentage": {
+        "name": "Data used percentage"
+      },
+      "data_expires_in": {
+        "name": "Data expires in"
+      },
+      "tariff_name": {
+        "name": "Tariff"
+      },
+      "subscription_status": {
+        "name": "Subscription status"
+      },
+      "100mb_adat_remaining": {
+        "name": "100MB add-on remaining"
+      },
+      "100mb_adat_expires_in": {
+        "name": "100MB add-on expires in"
+      }
+    },
+    "binary_sensor": {
+      "prepaid": {
+        "name": "Prepaid"
+      },
+      "esim": {
+        "name": "eSIM"
+      },
+      "barred": {
+        "name": "Barred"
+      },
+      "call_hold": {
+        "name": "Call hold"
+      },
+      "roaming_welcome_sms": {
+        "name": "Roaming welcome SMS"
+      },
+      "caller_id_restriction": {
+        "name": "Caller ID restriction"
+      },
+      "mobile_mms_service": {
+        "name": "Mobile MMS service"
+      },
+      "call_forwarding_busy": {
+        "name": "Call forwarding (busy)"
+      },
+      "call_forwarding_unconditional": {
+        "name": "Call forwarding (unconditional)"
+      },
+      "call_forwarding": {
+        "name": "Call forwarding"
+      },
+      "call_waiting": {
+        "name": "Call waiting"
+      },
+      "mobile_purchase_service": {
+        "name": "Mobile purchase service"
+      },
+      "call_forwarding_unreachable": {
+        "name": "Call forwarding (unreachable)"
+      },
+      "adult_content_filter": {
+        "name": "Adult content filter"
+      },
+      "call_notification_service": {
+        "name": "Call notification service"
+      },
+      "call_forwarding_no_answer": {
+        "name": "Call forwarding (no answer)"
+      },
+      "roaming_service": {
+        "name": "Roaming service"
+      },
+      "caller_id": {
+        "name": "Caller ID"
+      }
+    },
+    "button": {
+      "refresh": {
+        "name": "Refresh"
+      }
+    }
   }
 }
