@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="custom_components/one_hu/assets/logo.png" width="180" alt="One Hungary Unofficial logo">
+  <img src="custom_components/one_hu/brand/logo.png" width="180" alt="One Hungary Unofficial logo">
 </p>
 
 # One Hungary Unofficial
 
 ![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Custom%20Integration-41BDF5)
 ![HACS](https://img.shields.io/badge/HACS-Compatible-41BDF5)
-![Version](https://img.shields.io/badge/version-0.4.0-orange)
+![Version](https://img.shields.io/badge/version-0.4.4-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 An unofficial Home Assistant custom integration for monitoring One Hungary mobile subscriptions, balances, data usage, allowances, account status, and mobile services.
