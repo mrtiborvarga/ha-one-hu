@@ -5,6 +5,7 @@ from __future__ import annotations
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .account_device import subscription_device_info
 from .const import DOMAIN
 from .coordinator import OneDataUpdateCoordinator
 
@@ -87,9 +88,10 @@ class OneBaseBinarySensor(
     @property
     def device_info(self):
         """Device information."""
-        return {
-            "identifiers": {(DOMAIN, self._msisdn)},
-        }
+        return subscription_device_info(
+            self.coordinator,
+            self._msisdn,
+        )
 
 
 class OnePrepaidBinarySensor(OneBaseBinarySensor):

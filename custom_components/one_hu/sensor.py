@@ -16,6 +16,7 @@ from .account_device import (
     account_device_info,
     account_identifier,
     account_key,
+    subscription_device_info,
 )
 from .const import DOMAIN
 from .coordinator import OneDataUpdateCoordinator
@@ -174,12 +175,9 @@ class OneBaseSensor(
     @property
     def device_info(self) -> DeviceInfo:
         """Return subscription device information."""
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._msisdn)},
-            name=f"One Hungary {self._msisdn}",
-            manufacturer="One Hungary",
-            model="Mobile subscription",
-            via_device=account_identifier(self.coordinator),
+        return subscription_device_info(
+            self.coordinator,
+            self._msisdn,
         )
 
 
@@ -245,7 +243,6 @@ class OneBalanceSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="balance",
-        name="Balance",
         translation_key="balance",
         icon="mdi:cash",
     )
@@ -278,7 +275,6 @@ class OneDaysAvailableSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="days_available",
-        name="Days available",
         translation_key="days_available",
         icon="mdi:calendar-clock",
         native_unit_of_measurement="d",
@@ -314,7 +310,6 @@ class OneBundlesCountSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="bundles_count",
-        name="Bundles count",
         translation_key="bundles_count",
         icon="mdi:package-variant",
     )
@@ -359,7 +354,6 @@ class OneBucketsCountSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="buckets_count",
-        name="Buckets count",
         translation_key="buckets_count",
         icon="mdi:format-list-bulleted",
     )
@@ -392,7 +386,6 @@ class OneDataAllowanceSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="data_allowance",
-        name="Data allowance",
         translation_key="data_allowance",
         icon="mdi:database",
         native_unit_of_measurement="GB",
@@ -424,7 +417,6 @@ class OneDataRemainingSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="data_remaining",
-        name="Data remaining",
         translation_key="data_remaining",
         icon="mdi:database-check",
         native_unit_of_measurement="GB",
@@ -456,7 +448,6 @@ class OneDataUsedSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="data_used",
-        name="Data used",
         translation_key="data_used",
         icon="mdi:database-minus",
         native_unit_of_measurement="GB",
@@ -486,7 +477,6 @@ class OneDataUsedPercentageSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="data_used_percentage",
-        name="Data used percentage",
         translation_key="data_used_percentage",
         icon="mdi:percent",
         native_unit_of_measurement="%",
@@ -518,7 +508,6 @@ class OneDataExpiresInSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="data_expires_in",
-        name="Data expires in",
         translation_key="data_expires_in",
         icon="mdi:calendar-end",
         native_unit_of_measurement="d",
@@ -550,7 +539,6 @@ class OneTariffNameSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="tariff_name",
-        name="Tariff",
         translation_key="tariff_name",
         icon="mdi:ticket-account",
     )
@@ -575,7 +563,6 @@ class OneSubscriptionStatusSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="subscription_status",
-        name="Subscription status",
         translation_key="subscription_status",
         icon="mdi:sim",
     )
@@ -607,7 +594,6 @@ class One100MBRemainingSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="100mb_adat_remaining",
-        name="100MB adat Remaining",
         translation_key="100mb_adat_remaining",
         icon="mdi:database",
         native_unit_of_measurement="MB",
@@ -652,7 +638,6 @@ class One100MBExpiresInSensor(OneBaseSensor):
 
     entity_description = SensorEntityDescription(
         key="100mb_adat_expires_in",
-        name="100MB adat Expires In",
         translation_key="100mb_adat_expires_in",
         icon="mdi:calendar-clock",
         native_unit_of_measurement="d",

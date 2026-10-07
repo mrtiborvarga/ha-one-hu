@@ -59,3 +59,17 @@ def account_device_info(
         model="One Hungary account",
         configuration_url="https://www.one.hu",
     )
+
+
+def subscription_device_info(
+    coordinator: OneDataUpdateCoordinator,
+    msisdn: str,
+) -> DeviceInfo:
+    """Return device information for a mobile subscription."""
+    return DeviceInfo(
+        identifiers={(DOMAIN, msisdn)},
+        name=f"One Hungary {msisdn}",
+        manufacturer="One Hungary",
+        model="Mobile subscription",
+        via_device=account_identifier(coordinator),
+    )
