@@ -5,7 +5,10 @@ from __future__ import annotations
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .account_device import subscription_device_info
+from .account_device import (
+    subscription_device_info,
+    subscription_entity_id,
+)
 from .const import DOMAIN
 from .coordinator import OneDataUpdateCoordinator
 
@@ -73,6 +76,11 @@ class OneBaseBinarySensor(
     ) -> None:
         super().__init__(coordinator)
         self._msisdn = msisdn
+        self.entity_id = subscription_entity_id(
+            "binary_sensor",
+            msisdn,
+            self._attr_translation_key,
+        )
 
     @property
     def service(self) -> dict:
@@ -161,10 +169,10 @@ class OneExtraServiceBinarySensor(OneBaseBinarySensor):
         translation_key: str,
     ) -> None:
         """Initialize the extra service binary sensor."""
+        self._attr_translation_key = translation_key
         super().__init__(coordinator, msisdn)
 
         self._service_id = service_id
-        self._attr_translation_key = translation_key
         self._attr_unique_id = (
             f"{msisdn}_extra_service_{service_id}"
         )

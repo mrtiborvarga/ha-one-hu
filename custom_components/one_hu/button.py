@@ -6,7 +6,11 @@ from homeassistant.components.button import ButtonEntity
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .account_device import account_device_info, account_key
+from .account_device import (
+    account_device_info,
+    account_entity_id,
+    account_key,
+)
 from .const import DOMAIN
 from .coordinator import OneDataUpdateCoordinator
 
@@ -31,6 +35,7 @@ class OneRefreshButton(
         """Initialize the account refresh button."""
         super().__init__(coordinator)
         self._attr_unique_id = f"{account_key(coordinator)}_refresh"
+        self.entity_id = account_entity_id(coordinator, "button", "refresh")
 
     @property
     def device_info(self) -> DeviceInfo:

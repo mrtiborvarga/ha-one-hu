@@ -13,6 +13,8 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .account_device import (
+    account_entity_id,
+    subscription_entity_id,
     account_device_info,
     account_identifier,
     account_key,
@@ -115,6 +117,7 @@ class OneAccountSensor(
         """Initialize an account-level sensor."""
         super().__init__(coordinator)
         self._attr_unique_id = f"{account_key(coordinator)}_{key}"
+        self.entity_id = account_entity_id(coordinator, "sensor", key)
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -138,6 +141,11 @@ class OneBaseSensor(
         """Initialize the subscription sensor."""
         super().__init__(coordinator)
         self._msisdn = msisdn
+        self.entity_id = subscription_entity_id(
+            "sensor",
+            msisdn,
+            self.entity_description.key,
+        )
 
     @property
     def service(self) -> dict[str, Any]:
@@ -538,8 +546,8 @@ class OneTariffNameSensor(OneBaseSensor):
     """Tariff name."""
 
     entity_description = SensorEntityDescription(
-        key="tariff_name",
-        translation_key="tariff_name",
+        key="tariff",
+        translation_key="tariff",
         icon="mdi:ticket-account",
     )
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.util import slugify
 
 from .const import DOMAIN
 from .coordinator import OneDataUpdateCoordinator
@@ -73,3 +74,25 @@ def subscription_device_info(
         model="Mobile subscription",
         via_device=account_identifier(coordinator),
     )
+
+
+def account_entity_id(
+    coordinator: OneDataUpdateCoordinator,
+    domain: str,
+    key: str,
+) -> str:
+    """Return a fixed entity ID for an account-level entity.
+
+    Set explicitly so Home Assistant does not prepend the device's area
+    name when an entity is added to a device that already has an area.
+    """
+    return f"{domain}.{slugify(account_device_name(coordinator))}_{key}"
+
+
+def subscription_entity_id(
+    domain: str,
+    msisdn: str,
+    key: str,
+) -> str:
+    """Return a fixed entity ID for a subscription-level entity."""
+    return f"{domain}.one_hungary_{msisdn}_{key}"
